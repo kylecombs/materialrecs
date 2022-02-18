@@ -1,13 +1,24 @@
-const mongoose = require('mongoose');
+const { Schema, model, models } = require('mongoose');
 
-const productSchema = new mongoose.Schema({
+interface Product {
+  image: string;
+  title: string;
+  price: number;
+  artist: string;
+  quantity: number;
+  tags?: string[];
+  bandcampURL?: string;
+  description?: string;
+}
+
+const productSchema = new Schema({
   image: {
     type: String,
     required: true,
   },
   title: {
     type: String,
-    required: false,
+    required: true,
   },
   price: {
     type: Number,
@@ -22,8 +33,20 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  tags: {
+    type: Array,
+    required: false,
+  },
+  bandcampURL: {
+    type: String,
+    required: false,
+  },
+  description: {
+    type: String,
+    required: false,
+  }
 });
 
-const Product = mongoose.model('Product', productSchema);
+// const Product = mongoose.model('Product', productSchema);
 
-module.exports = Product;
+module.exports = models.Product || model('Product', productSchema);

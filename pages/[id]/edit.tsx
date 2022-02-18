@@ -1,11 +1,19 @@
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import fetch from 'isomorphic-unfetch';
 import { Button, Form, Loader } from 'semantic-ui-react';
 import { useRouter } from 'next/router';
+import { NextPage } from 'next';
 
-const NewNote = () => {
-  const [form, setForm] = useState<IForm>({ title: '', description: '' });
+interface Props {
+  note: { title: string; description: string };
+}
+
+const EditNote: NextPage<Props> = ({ note }) => {
+  const [form, setForm] = useState<IForm>({
+    title: note.title,
+    description: note.description,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<any>({});
   const router = useRouter();
@@ -15,41 +23,48 @@ const NewNote = () => {
     description: string;
   }
 
-  useEffect(() => {
-    if (isSubmitting) {
-      if (Object.values(errors).filter(e => e).length === 0) {
-        createNote();
-      } else {
-        setIsSubmitting(false);
-      }
-    }
-  }, [errors]);
-
-  const createNote = async () => {
+  const updateNote = useCallback(async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/notes', {
-        method: 'POST',
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        `http://localhost:3000/api/notes/${router.query.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form),
+        }
+      );
       console.log('hello');
       router.push('/');
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [form, router]);
 
-  const handleSubmit = (event) => {
+  useEffect(() => {
+    if (isSubmitting) {
+      if (Object.values(errors).filter((e) => e).length === 0) {
+        updateNote();
+      } else {
+        setIsSubmitting(false);
+      }
+    }
+  }, [errors, isSubmitting, updateNote]);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let error = validate();
     setErrors(error);
     setIsSubmitting(true);
   };
 
-  const handleChange = (event) => {
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
@@ -67,7 +82,7 @@ const NewNote = () => {
 
   return (
     <div className='form-container'>
-      <h1>Create Note</h1>
+      <h1>Update Note</h1>
       <div>
         {isSubmitting ? (
           <Loader active inline='centered' />
@@ -83,6 +98,7 @@ const NewNote = () => {
               label='Title'
               placeholder='Title'
               name='title'
+              value={form.title}
               onChange={handleChange}
             />
             <Form.TextArea
@@ -95,9 +111,10 @@ const NewNote = () => {
               label='Description'
               placeholder='Description'
               name='description'
+              value={form.description}
               onChange={handleChange}
             />
-            <Button type='submit'>Create</Button>
+            <Button type='submit'>Update</Button>
           </Form>
         )}
       </div>
@@ -105,4 +122,10 @@ const NewNote = () => {
   );
 };
 
-export default NewNote;
+EditNote.getInitialProps = async ({ query: { id } }) => {
+  const res = await fetch(`http://localhost:3000/api/notes/${id}`);
+  const { data } = await res.json();
+  return { note: data };
+};
+
+export default EditNote;

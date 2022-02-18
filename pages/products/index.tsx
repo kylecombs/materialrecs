@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 import { Button, Card } from 'semantic-ui-react';
@@ -26,10 +27,12 @@ interface Props {
   products: Array<IProduct>;
 }
 
-const Index: NextPage<Props> = ({ products }) => {
+const ProductList: NextPage<Props> = ({ products }) => {
+  const [page, setPage] = useState(0);
+
   return (
     <div className='notes-container'>
-      <h1>Products</h1>
+      <h1>Vinyl</h1>
       <div className='grid wrapper'>
         {products.map((product) => {
           return (
@@ -51,11 +54,11 @@ const Index: NextPage<Props> = ({ products }) => {
   );
 };
 
-Index.getInitialProps = async () => {
-  const res = await fetch('http://localhost:3000/api/products');
+ProductList.getInitialProps = async () => {
+  const res = await fetch(`http://localhost:3000/api/products`);
   const { data } = await res.json();
 
   return { products: data };
 };
 
-export default Index;
+export default ProductList;
