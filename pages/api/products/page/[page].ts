@@ -8,7 +8,7 @@ dbConnect();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method, query } = req;
-  const limit = query.limit || 9
+  const limit = query.limit || 18
   const startIdx = query.page * limit
   switch (method) {
     case 'GET':

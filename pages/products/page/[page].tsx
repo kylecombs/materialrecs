@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
 import { Select, Pagination } from 'semantic-ui-react';
 import { usePrevious } from '../../../hooks/usePrevious';
+import SearchBar from '../../../components/SearchBar';
 import 'semantic-ui-css/semantic.min.css';
 
 const GalleryImage = styled.img`
@@ -33,9 +34,12 @@ interface Props {
 
 const ProductList: NextPage<Props> = ({ products }) => {
   const { query, push } = useRouter();
-  const [productsPerPage, setProductsPerPage] = useState(query.limit || 9);
+  const [productsPerPage, setProductsPerPage] = useState(query.limit || 18);
   const [startIdx, setStartIdx] = useState(0);
   const [displayProducts, setDisplayProducts] = useState(products);
+  const [filters, setFilters] = useState({
+    search: '',
+  });
 
   const handlePerPageChange = (e, { value }) => {
     setProductsPerPage(value);
@@ -70,11 +74,12 @@ const ProductList: NextPage<Props> = ({ products }) => {
   return (
     <div className='notes-container'>
       <h1>Vinyl</h1>
-      <Select
+      {/* <Select
         placeholder='number per page'
         options={limitOptions}
         onChange={handlePerPageChange}
-      />
+      /> */}
+      <SearchBar filters={filters} setFilters={setFilters} />
       <Pagination
         activePage={parseInt(query.page) + 1}
         totalPages={totalPages}
