@@ -5,7 +5,8 @@ import { Button, Card } from 'semantic-ui-react';
 import { NextPage } from 'next';
 import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
-import { Select, Pagination } from 'semantic-ui-react';
+// import { Select, Pagination } from 'semantic-ui-react';
+import { Paginate } from 'brutui'
 import { usePrevious } from '../../../hooks/usePrevious';
 import SearchBar from '../../../components/SearchBar';
 import 'semantic-ui-css/semantic.min.css';
@@ -40,6 +41,7 @@ const ProductList: NextPage<Props> = ({ products }) => {
   const [filters, setFilters] = useState({
     search: '',
   });
+  const [page, setPage] = useState(parseInt(query.page) + 1)
 
   const handlePerPageChange = (e, { value }) => {
     setProductsPerPage(value);
@@ -80,11 +82,12 @@ const ProductList: NextPage<Props> = ({ products }) => {
         onChange={handlePerPageChange}
       /> */}
       <SearchBar filters={filters} setFilters={setFilters} />
-      <Pagination
+      <Paginate isMobile={false} totalPages={totalPages} page={page} setPage={setPage}/>
+      {/* <Pagination
         activePage={parseInt(query.page) + 1}
         totalPages={totalPages}
         onPageChange={handlePageChange}
-      />
+      /> */}
       <div className='grid wrapper'>
         {displayProducts ? (
           displayProducts.map((product) => {
