@@ -3,6 +3,7 @@ import React from 'react';
 // import 'semantic-ui-css/semantic.min.css';
 import Layout from '../components/Layout';
 import '../css/style.css';
+import '../css/tailwind.css'
 import { AppProps } from 'next/app';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {

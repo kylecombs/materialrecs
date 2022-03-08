@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
-import { Button, Card } from 'semantic-ui-react';
 import { NextPage } from 'next';
 import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
@@ -9,7 +8,7 @@ import { Select, Pagination } from 'semantic-ui-react';
 import { usePrevious } from '../../../hooks/usePrevious';
 import SearchBar from '../../../components/SearchBar';
 import 'semantic-ui-css/semantic.min.css';
-
+import { Button } from 'brutui'
 const GalleryImage = styled.img`
   max-width: 15rem;
 `;
@@ -79,6 +78,7 @@ const ProductList: NextPage<Props> = ({ products }) => {
         options={limitOptions}
         onChange={handlePerPageChange}
       /> */}
+      <Button variant="primary">Hello</Button>
       <SearchBar filters={filters} setFilters={setFilters} />
       <Pagination
         activePage={parseInt(query.page) + 1}
